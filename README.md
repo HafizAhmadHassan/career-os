@@ -53,3 +53,4 @@ Private dashboard data is stored in IndexedDB (browser local storage).
 ## Export/Import
 
 Use the Dashboard → Export/Import buttons to backup and restore your local tracking data.
+
