@@ -1,4 +1,5 @@
 # Career OS
+*Created: 2026-08-28*
 
 Personal Agentic AI Career OS — a portfolio, learning roadmap, and career dashboard.
 
