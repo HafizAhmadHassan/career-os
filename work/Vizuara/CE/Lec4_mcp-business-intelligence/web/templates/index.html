@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>MCP Business Intelligence</title>
+
+    <link
+        rel="stylesheet"
+        href="/static/style.css"
+    >
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- Sidebar -->
+
+        <aside class="sidebar">
+
+            <div class="logo">
+                <div class="logo-icon">M</div>
+
+                <div>
+                    <h2>MCP BI</h2>
+                    <span>Business Intelligence</span>
+                </div>
+            </div>
+
+
+            <div class="sidebar-section">
+
+                <label>AI Provider</label>
+
+                <select id="provider">
+
+                    <option value="groq">
+                        Groq
+                    </option>
+
+                    <option value="openai">
+                        OpenAI
+                    </option>
+
+                    <option value="gemini">
+                        Gemini
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="sidebar-section">
+
+                <label>MCP Server</label>
+
+                <div class="connection">
+
+                    <span
+                        id="status-dot"
+                        class="status-dot"
+                    ></span>
+
+                    <span id="server-status">
+                        Checking connection...
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="sidebar-section">
+
+                <label>MCP Endpoint</label>
+
+                <div class="endpoint">
+                    /mcp
+                </div>
+
+            </div>
+
+
+            <div class="sidebar-footer">
+
+                <div class="architecture-title">
+                    Architecture
+                </div>
+
+                <div class="architecture">
+                    <div>Browser</div>
+                    <span>↓</span>
+
+                    <div>LLM</div>
+                    <span>↓</span>
+
+                    <div>MCP Client</div>
+                    <span>↓</span>
+
+                    <div>MCP Server</div>
+                    <span>↓</span>
+
+                    <div>Business Data</div>
+                </div>
+
+            </div>
+
+        </aside>
+
+
+        <!-- Main content -->
+
+        <main class="main">
+
+            <header class="header">
+
+                <div>
+
+                    <h1>
+                        Business Intelligence Agent
+                    </h1>
+
+                    <p>
+                        Ask questions about your business data
+                        using MCP-powered AI.
+                    </p>
+
+                </div>
+
+                <div class="header-badge">
+                    MCP Connected
+                </div>
+
+            </header>
+
+
+            <section class="content">
+
+
+                <!-- Question card -->
+
+                <div class="card question-card">
+
+                    <div class="card-title">
+
+                        <span class="icon">
+                            ✦
+                        </span>
+
+                        Ask your business question
+
+                    </div>
+
+
+                    <textarea
+                        id="question"
+                        placeholder="Example: Which product is underperforming between Q1 and Q2?"
+                    ></textarea>
+
+
+                    <div class="question-footer">
+
+                        <div class="hint">
+                            The AI will use MCP tools to analyze your data.
+                        </div>
+
+                        <button
+                            id="analyze-btn"
+                            onclick="analyze()"
+                        >
+                            Analyze
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Results -->
+
+                <div class="results-grid">
+
+
+                    <!-- AI response -->
+
+                    <div class="card response-card">
+
+                        <div class="card-title">
+
+                            <span class="icon">
+                                ✦
+                            </span>
+
+                            Analysis
+
+                        </div>
+
+
+                        <div
+                            id="response"
+                            class="response"
+                        >
+
+                            <div class="empty-state">
+
+                                <div class="empty-icon">
+                                    ✦
+                                </div>
+
+                                <h3>
+                                    Ready for analysis
+                                </h3>
+
+                                <p>
+                                    Ask a business question above
+                                    to get started.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- MCP activity -->
+
+                    <div class="card activity-card">
+
+                        <div class="card-title">
+
+                            <span class="icon">
+                                ⚙
+                            </span>
+
+                            MCP Activity
+
+                        </div>
+
+
+                        <div id="activity">
+
+                            <div class="activity-item">
+
+                                <span class="activity-dot"></span>
+
+                                <div>
+
+                                    <strong>
+                                        MCP Server
+                                    </strong>
+
+                                    <span>
+                                        Waiting for request
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="activity-item">
+
+                                <span class="activity-dot"></span>
+
+                                <div>
+
+                                    <strong>
+                                        Tool discovery
+                                    </strong>
+
+                                    <span>
+                                        Ready
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Tools -->
+
+                <div class="card tools-card">
+
+                    <div class="card-title">
+
+                        <span class="icon">
+                            ⚡
+                        </span>
+
+                        Available MCP Tools
+
+                    </div>
+
+
+                    <div class="tools">
+
+                        <div class="tool">
+
+                            <div class="tool-icon">
+                                📊
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    get_sales_data
+                                </strong>
+
+                                <span>
+                                    Retrieve business sales data
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="tool">
+
+                            <div class="tool-icon">
+                                📈
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    calculate_growth
+                                </strong>
+
+                                <span>
+                                    Calculate percentage growth
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="tool">
+
+                            <div class="tool-icon">
+                                🏢
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    get_business_context
+                                </strong>
+
+                                <span>
+                                    Retrieve business context
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <footer class="footer">
+
+                MCP Business Intelligence Agent
+                <span>•</span>
+                Built with Model Context Protocol
+
+            </footer>
+
+        </main>
+
+    </div>
+
+
+    <script src="/static/app.js"></script>
+
+</body>
+
+</html>

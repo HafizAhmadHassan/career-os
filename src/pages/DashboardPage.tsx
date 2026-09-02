@@ -1,16 +1,38 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, Radar } from 'recharts';
-import { calculateCareerReadiness, getTodayMission } from '@/lib/readiness';
-import { roadmapItems } from '@/data/roadmap';
+import { calculateCareerReadiness, getRoadmapDashboard } from '@/lib/readiness';
+import type { RoadmapDashboard } from '@/lib/readiness';
 import { skills } from '@/data/skills';
 import { experiments } from '@/data/experiments';
-import { Download, Upload, RotateCcw } from 'lucide-react';
+import { Download, Upload, RotateCcw, ArrowRight, CheckCircle2, Clock, FlaskConical, Target } from 'lucide-react';
 import { storage, downloadJSON } from '@/lib/storage';
+
+function ProgressBar({ value }: { value: number }) {
+  return (
+    <div className="h-2 w-full overflow-hidden rounded-full bg-secondary">
+      <div
+        className="h-full rounded-full bg-primary transition-all duration-300"
+        style={{ width: `${Math.min(100, value)}%` }}
+      />
+    </div>
+  );
+}
 
 export default function DashboardPage() {
   const readiness = calculateCareerReadiness();
-  const mission = getTodayMission();
+  const [dashboard, setDashboard] = useState<RoadmapDashboard | null>(null);
   const [exportMsg, setExportMsg] = useState('');
+
+  useEffect(() => {
+    let active = true;
+    void getRoadmapDashboard().then((data) => {
+      if (active) setDashboard(data);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const radarData = readiness.map(r => ({
     subject: r.category.replace(' ', '\n'),
@@ -58,6 +80,7 @@ export default function DashboardPage() {
       await storage.clear('goals');
       await storage.clear('interviewQuestions');
       await storage.clear('experiments');
+      await storage.clear('topicProgress');
       setExportMsg('Local data cleared.');
       setTimeout(() => setExportMsg(''), 3000);
     }
@@ -87,27 +110,94 @@ export default function DashboardPage() {
         <div className="rounded-md bg-primary/10 px-3 py-2 text-sm text-primary">{exportMsg}</div>
       )}
 
-      {/* Today's Mission */}
+      {/* Today's Mission — driven by incomplete roadmap work */}
       <div className="rounded-lg border border-border bg-card p-6">
         <div className="text-xs text-muted-foreground">// Today&apos;s Mission</div>
-        <h2 className="mt-2 text-lg font-medium">{mission.title}</h2>
+        <h2 className="mt-2 text-lg font-medium">{dashboard?.mission.title ?? 'Loading…'}</h2>
         <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <div className="text-xs text-muted-foreground">Skill</div>
-            <div className="text-sm">{mission.skill}</div>
+            <div className="text-xs text-muted-foreground">Skill / Phase</div>
+            <div className="text-sm">{dashboard?.mission.skill ?? '—'}</div>
           </div>
           <div>
             <div className="text-xs text-muted-foreground">Estimated Time</div>
-            <div className="text-sm">{mission.estimatedTime}</div>
+            <div className="text-sm">{dashboard?.mission.estimatedTime ?? '—'}</div>
           </div>
           <div>
             <div className="text-xs text-muted-foreground">Why It Matters</div>
-            <div className="text-sm">{mission.whyItMatters}</div>
+            <div className="text-sm">{dashboard?.mission.whyItMatters ?? '—'}</div>
           </div>
           <div>
-            <div className="text-xs text-muted-foreground">Related Project</div>
-            <div className="text-sm">{mission.relatedProject}</div>
+            <div className="text-xs text-muted-foreground">Related Topic</div>
+            <div className="text-sm">{dashboard?.mission.relatedProject ?? '—'}</div>
           </div>
+        </div>
+        <div className="mt-4 flex items-center gap-2">
+          {dashboard?.mission.topicSlug && (
+            <>
+              <Link
+                to={`/roadmap/${dashboard.mission.topicSlug}`}
+                className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
+              >
+                <Target className="h-4 w-4" /> Start Mission
+              </Link>
+              <span className="text-xs text-muted-foreground">{dashboard.mission.actionLabel}</span>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Continue Learning + Recommended Next */}
+      <div className="grid gap-4 lg:grid-cols-2">
+        <div className="rounded-lg border border-border p-5">
+          <div className="text-xs font-medium text-muted-foreground">Continue Learning</div>
+          {dashboard?.continueLearning ? (
+            <>
+              <div className="mt-2 flex items-center justify-between gap-2">
+                <span className="font-medium">{dashboard.continueLearning.item.title}</span>
+                <span className="font-mono text-xs text-muted-foreground">
+                  {dashboard.continueLearning.summary.overall}%
+                </span>
+              </div>
+              <ProgressBar value={dashboard.continueLearning.summary.overall} />
+              <p className="mt-2 text-sm text-muted-foreground">
+                Next: {dashboard.continueLearning.nextAction?.label ?? 'Module complete'}
+              </p>
+              <Link
+                to={`/roadmap/${dashboard.continueLearning.item.slug}`}
+                className="mt-3 inline-flex items-center gap-1 rounded-md border border-border px-3 py-1.5 text-sm hover:bg-accent"
+              >
+                Continue <ArrowRight className="h-4 w-4" />
+              </Link>
+            </>
+          ) : (
+            <p className="mt-2 text-sm text-muted-foreground">
+              {dashboard ? 'Nothing left to learn — great work!' : 'Loading…'}
+            </p>
+          )}
+        </div>
+
+        <div className="rounded-lg border border-border p-5">
+          <div className="text-xs font-medium text-muted-foreground">Recommended Next</div>
+          {dashboard?.recommendedNext ? (
+            <>
+              <div className="mt-2 flex items-center gap-2">
+                <FlaskConical className="h-4 w-4 text-muted-foreground" />
+                <span className="font-medium">{dashboard.recommendedNext.item.title}</span>
+              </div>
+              <p className="mt-2 text-sm text-muted-foreground">{dashboard.recommendedNext.reason}</p>
+              <Link
+                to={`/roadmap/${dashboard.recommendedNext.item.slug}`}
+                className="mt-3 inline-flex items-center gap-1 rounded-md border border-border px-3 py-1.5 text-sm hover:bg-accent"
+              >
+                Start Module <ArrowRight className="h-4 w-4" />
+              </Link>
+            </>
+          ) : (
+            <p className="mt-2 text-sm text-muted-foreground">
+              {dashboard ? 'No next topic yet — start or continue any module.' : 'Loading…'}
+            </p>
+          )}
         </div>
       </div>
 
@@ -146,21 +236,41 @@ export default function DashboardPage() {
           <div className="mt-1 text-2xl font-bold font-mono">{skills.length}</div>
         </div>
         <div className="rounded-lg border border-border p-4">
-          <div className="text-xs text-muted-foreground">Skills in Progress</div>
+          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+            Overall Roadmap <Clock className="h-3 w-3" />
+          </div>
           <div className="mt-1 text-2xl font-bold font-mono">
-            {skills.filter(s => s.status === 'learning' || s.status === 'practicing').length}
+            {dashboard?.stats.overall ?? 0}%
           </div>
         </div>
         <div className="rounded-lg border border-border p-4">
-          <div className="text-xs text-muted-foreground">Experiments</div>
-          <div className="mt-1 text-2xl font-bold font-mono">{experiments.length}</div>
-        </div>
-        <div className="rounded-lg border border-border p-4">
-          <div className="text-xs text-muted-foreground">Roadmap Items</div>
+          <div className="text-xs text-muted-foreground">Modules Demonstrated</div>
           <div className="mt-1 text-2xl font-bold font-mono">
-            {roadmapItems.filter(i => i.status === 'completed').length}/{roadmapItems.length}
+            {dashboard ? `${dashboard.stats.demonstrated}/18` : '·'}
           </div>
         </div>
+        <div className="rounded-lg border border-border p-4">
+          <div className="text-xs text-muted-foreground">Labs Completed</div>
+          <div className="mt-1 text-2xl font-bold font-mono">
+            {dashboard?.stats.labsCompleted ?? 0}
+          </div>
+        </div>
+      </div>
+
+      {/* Recently Completed */}
+      <div className="space-y-3">
+        <h3 className="font-medium">Roadmap Progress</h3>
+        {dashboard ? (
+          <>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <CheckCircle2 className="h-4 w-4 text-green-600" />
+              {dashboard.stats.demonstrated} of 18 modules demonstrated · {dashboard.stats.resourcesRead} resources read
+            </div>
+            <ProgressBar value={dashboard.stats.overall} />
+          </>
+        ) : (
+          <p className="text-sm text-muted-foreground">Loading progress…</p>
+        )}
       </div>
 
       {/* Recent Experiments */}

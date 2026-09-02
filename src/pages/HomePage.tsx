@@ -93,7 +93,7 @@ export default function HomePage() {
             { to: '/projects', icon: Code2, label: 'Projects', desc: 'Portfolio projects' },
             { to: '/github', icon: GitBranch, label: 'GitHub', desc: 'Repos & contributions' },
             { to: '/interview', icon: FileText, label: 'Interview', desc: 'Preparation lab' },
-            { to: '/blog', icon: BookOpen, label: 'Writing', desc: 'Technical articles' },
+            { to: '/writing', icon: BookOpen, label: 'Writing', desc: 'Technical articles' },
             { to: '/freelance', icon: Briefcase, label: 'Freelance', desc: 'Services offered' },
             { to: '/dashboard', icon: FlaskConical, label: 'Dashboard', desc: 'Career tracking' },
           ].map(({ to, icon: Icon, label, desc }) => (
