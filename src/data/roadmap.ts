@@ -31,6 +31,8 @@ export const roadmapItems: RoadmapItem[] = [
     skillId: 'typescript',
     resources: [
       { title: 'TypeScript Handbook', url: 'https://www.typescriptlang.org/docs/handbook/', type: 'docs' },
+      { title: 'TypeScript & Modern Web Playlist', url: 'https://www.youtube.com/playlist?list=PLbtI3_MArDOkXRLxdMt1NOMtCS-84ibHH', type: 'course' },
+      { title: 'TypeScript & Modern Web Playlist 2', url: 'https://www.youtube.com/playlist?list=PLbtI3_MArDOm777bemDCy1abP1t1Rnnbx', type: 'course' },
     ],
     evidenceIds: [],
     notes: '',

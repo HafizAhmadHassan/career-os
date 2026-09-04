@@ -13,6 +13,7 @@ import {
   FlaskConical,
   Info,
   Layers,
+  List,
   ListChecks,
   MessageSquare,
   Play,
@@ -26,7 +27,9 @@ import {
 import { cn } from '@/lib/utils';
 import { getCurriculumBySlug } from '@/data/curriculum';
 import { getVideosForSlug } from '@/data/topicVideos';
+import { getPlaylistsForSlug } from '@/data/topicPlaylists';
 import { VideoCard } from '@/components/VideoCard';
+import { PlaylistCard } from '@/components/PlaylistCard';
 import { getRoadmapItem } from '@/lib/progress';
 import {
   computeTopicProgress,
@@ -354,6 +357,7 @@ export default function TopicPage() {
       </Section>
 
       <VideosSection topicSlug={topicSlug} />
+      <PlaylistsSection topicSlug={topicSlug} />
 
       <ObjectivesSection topicId={topicId} curriculum={curriculum} progress={progress} refresh={refresh} />
       <ResourcesSection
@@ -445,6 +449,25 @@ function VideosSection({ topicSlug }: { topicSlug: string }) {
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {videos.map((v, i) => (
           <VideoCard key={`${v.youtubeId}-${i}`} {...v} />
+        ))}
+      </div>
+    </Section>
+  );
+}
+
+function PlaylistsSection({ topicSlug }: { topicSlug: string }) {
+  const playlists = getPlaylistsForSlug(topicSlug);
+  if (playlists.length === 0) return null;
+  return (
+    <Section
+      id="playlists"
+      icon={<List className="h-4 w-4" />}
+      title="Playlists"
+      subtitle="Curated YouTube playlists for this module."
+    >
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {playlists.map((p, i) => (
+          <PlaylistCard key={`${p.playlistId}-${i}`} {...p} />
         ))}
       </div>
     </Section>

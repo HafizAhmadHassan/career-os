@@ -122,6 +122,8 @@ export const curriculum: Record<string, TopicCurriculum> = {
       { id: 'res-5', title: 'React Router Docs', kind: 'documentation', source: 'reactrouter.com', url: 'https://reactrouter.com/', description: 'Client-side routing for SPAs.', difficulty: 'intermediate', estimatedMinutes: 90, priority: 'medium' },
       { id: 'res-6', title: 'TypeScript Deep Dive', kind: 'tutorial', source: 'basarat.gitbook.io', url: 'https://basarat.gitbook.io/typescript', description: 'A practical, community-driven dive into the TS type system.', difficulty: 'intermediate', estimatedMinutes: 120, priority: 'medium' },
       { id: 'res-7', title: 'React Docs: Reusing Logic with Custom Hooks', kind: 'documentation', source: 'react.dev', url: 'https://react.dev/learn/reusing-logic-with-custom-hooks', description: 'Extracting and composing hook-based logic.', difficulty: 'intermediate', estimatedMinutes: 45, priority: 'medium' },
+      { id: 'res-8', title: 'TypeScript & Modern Web Playlist', kind: 'video', source: 'youtube.com', url: 'https://www.youtube.com/playlist?list=PLbtI3_MArDOkXRLxdMt1NOMtCS-84ibHH', description: 'YouTube playlist covering TypeScript and modern web development.', difficulty: 'beginner', estimatedMinutes: 600, priority: 'medium' },
+      { id: 'res-9', title: 'TypeScript & Modern Web Playlist 2', kind: 'video', source: 'youtube.com', url: 'https://www.youtube.com/playlist?list=PLbtI3_MArDOm777bemDCy1abP1t1Rnnbx', description: 'Additional TypeScript and modern web development videos.', difficulty: 'beginner', estimatedMinutes: 600, priority: 'medium' },
     ],
     labs: [
       {
